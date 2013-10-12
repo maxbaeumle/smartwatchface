@@ -1,0 +1,22 @@
+{
+    "media": [
+        {
+            "defName": "FONT_ROBOTO_CONDENSED_21",
+            "type": "font",
+            "file": "fonts/Roboto-Condensed.ttf"
+        },
+        {
+            "characterRegex": "[:0-9]",
+            "defName": "FONT_ROBOTO_BOLD_SUBSET_49",
+            "type": "font",
+            "file": "fonts/Roboto-Bold.ttf"
+        },
+        {
+            "defName": "BATTERY_ICON",
+            "type": "png",
+            "file": "images/battery_icon.png"
+        }
+    ],
+    "friendlyVersion": "VERSION",
+    "versionDefName": "APP_RESOURCES"
+}

@@ -1,7 +1,7 @@
 #ifndef common_h
 #define common_h
 
-#include "pebble_os.h"
+#include "pebble.h"
 
 #define RECONNECT_KEY 0
 #define REQUEST_CALENDAR_KEY 1

@@ -1,0 +1,32 @@
+{
+  "uuid": "698b3e04-b12e-4ff5-bfad-1be6bdfeb4d7",
+  "shortName": "Smartwatch Pro",
+  "longName": "Smartwatch Pro",
+  "companyName": "Max Baeumle",
+  "versionCode": 1,
+  "versionLabel": "1.0.0",
+  "watchapp": {
+    "watchface": true
+  },
+  "appKeys": {},
+  "resources": {
+    "media": [
+      {
+        "type": "font",
+        "name": "FONT_ROBOTO_CONDENSED_21",
+        "file": "fonts/Roboto-Condensed.ttf"
+      },
+      {
+        "type": "font",
+        "characterRegex": "[:0-9]",
+        "name": "FONT_ROBOTO_BOLD_SUBSET_49",
+        "file": "fonts/Roboto-Bold.ttf"
+      },
+      {
+        "type": "png",
+        "name": "BATTERY_ICON",
+        "file": "images/battery_icon.png"
+      }
+    ]
+  }
+}

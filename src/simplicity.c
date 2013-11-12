@@ -33,7 +33,7 @@ void battery_layer_update_callback(Layer *layer, GContext *ctx) {
     char *str = malloc(num + 1);
     snprintf(str, num + 1, "%hhd %%", battery_status.level);
 
-    graphics_draw_text(ctx, str, fonts_get_system_font(FONT_KEY_GOTHIC_14), GRect(0, -3, 35-5, 14), 0, GTextAlignmentRight, NULL);
+    graphics_draw_text(ctx, str, fonts_get_system_font(FONT_KEY_GOTHIC_14), GRect(-2, -3, 35-3, 14), 0, GTextAlignmentRight, NULL);
 
     free(str);
 

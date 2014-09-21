@@ -29,9 +29,9 @@ void battery_layer_update_callback(Layer *layer, GContext *ctx) {
   graphics_draw_bitmap_in_rect(ctx, icon_battery, GRect(35, 0, 24, 12));
 
   if (battery_status.state != 0 && battery_status.level >= 0 && battery_status.level <= 100) {
-    int num = snprintf(NULL, 0, "%hhd %%", battery_status.level);
+    int num = snprintf(NULL, 0, "%d %%", battery_status.level);
     char *str = malloc(num + 1);
-    snprintf(str, num + 1, "%hhd %%", battery_status.level);
+    snprintf(str, num + 1, "%d %%", battery_status.level);
 
     graphics_draw_text(ctx, str, fonts_get_system_font(FONT_KEY_GOTHIC_14), GRect(-2, -3, 35-3, 14), 0, GTextAlignmentRight, NULL);
 

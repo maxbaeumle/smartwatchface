@@ -1,32 +1,36 @@
 {
-  "uuid": "33402e38-fd4e-45eb-86b8-1c88290fc732",
-  "shortName": "Simplicity",
-  "longName": "Simplicity for Smartwatch Pro",
-  "companyName": "Max Baeumle",
-  "versionCode": 1,
-  "versionLabel": "1.0.0",
-  "watchapp": {
-    "watchface": true
-  },
-  "appKeys": {},
-  "resources": {
-    "media": [
-      {
-        "type": "font",
-        "name": "FONT_ROBOTO_CONDENSED_21",
-        "file": "fonts/Roboto-Condensed.ttf"
-      },
-      {
-        "type": "font",
-        "characterRegex": "[:0-9]",
-        "name": "FONT_ROBOTO_BOLD_SUBSET_49",
-        "file": "fonts/Roboto-Bold.ttf"
-      },
-      {
-        "type": "png",
-        "name": "BATTERY_ICON",
-        "file": "images/battery_icon.png"
-      }
-    ]
-  }
+    "appKeys": {},
+    "capabilities": [
+        ""
+    ],
+    "companyName": "Max Baeumle",
+    "longName": "Simplicity for Smartwatch Pro",
+    "projectType": "native",
+    "resources": {
+        "media": [
+            {
+                "file": "images/battery_icon.png",
+                "name": "BATTERY_ICON",
+                "type": "png"
+            },
+            {
+                "characterRegex": "[:0-9]",
+                "file": "fonts/Roboto-Bold.ttf",
+                "name": "FONT_ROBOTO_BOLD_SUBSET_49",
+                "type": "font"
+            },
+            {
+                "file": "fonts/Roboto-Condensed.ttf",
+                "name": "FONT_ROBOTO_CONDENSED_21",
+                "type": "font"
+            }
+        ]
+    },
+    "shortName": "Simplicity",
+    "uuid": "33402e38-fd4e-45eb-86b8-1c88290fc732",
+    "versionCode": 1,
+    "versionLabel": "1.0",
+    "watchapp": {
+        "watchface": true
+    }
 }

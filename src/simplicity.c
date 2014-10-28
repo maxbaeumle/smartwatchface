@@ -15,7 +15,7 @@ TextLayer *text_event_start_date_layer;
 TextLayer *text_event_location_layer;
 
 Event event;
-BatteryStatus battery_status;
+BatteryChargeState charge_state;
 
 void line_layer_update_callback(Layer *layer, GContext *ctx) {
   graphics_context_set_stroke_color(ctx, GColorWhite);
@@ -28,34 +28,24 @@ void battery_layer_update_callback(Layer *layer, GContext *ctx) {
   graphics_context_set_compositing_mode(ctx, GCompOpAssignInverted);
   graphics_draw_bitmap_in_rect(ctx, icon_battery, GRect(35, 0, 24, 12));
 
-  if (battery_status.state != 0 && battery_status.level >= 0 && battery_status.level <= 100) {
-    int num = snprintf(NULL, 0, "%d %%", battery_status.level);
-    char *str = malloc(num + 1);
-    snprintf(str, num + 1, "%d %%", battery_status.level);
+  int num = snprintf(NULL, 0, "%u %%", charge_state.charge_percent);
+  char *str = malloc(num + 1);
+  snprintf(str, num + 1, "%u %%", charge_state.charge_percent);
 
-    graphics_draw_text(ctx, str, fonts_get_system_font(FONT_KEY_GOTHIC_14), GRect(-2, -3, 35-3, 14), 0, GTextAlignmentRight, NULL);
+  graphics_draw_text(ctx, str, fonts_get_system_font(FONT_KEY_GOTHIC_14), GRect(-2, -3, 35-3, 14), 0, GTextAlignmentRight, NULL);
 
-    free(str);
+  free(str);
 
-    if (battery_status.level > 0) {
-      graphics_context_set_stroke_color(ctx, GColorBlack);
-      graphics_context_set_fill_color(ctx, GColorWhite);
-      graphics_fill_rect(ctx, GRect(38, 3, (uint8_t)((battery_status.level / 100.0) * 16.0), 6), 0, GCornerNone);
-    }
+  if (charge_state.charge_percent > 0 && charge_state.charge_percent <= 100) {
+    graphics_context_set_stroke_color(ctx, GColorBlack);
+    graphics_context_set_fill_color(ctx, GColorWhite);
+    graphics_fill_rect(ctx, GRect(38, 3, (uint8_t)((charge_state.charge_percent * 0.01) * 16), 6), 0, GCornerNone);
   }
 }
 
-void handle_timer(void *data) {
-  DictionaryIterator *iter;
-  app_message_outbox_begin(&iter);
-
-  if (!iter) {
-    app_timer_register(1000, &handle_timer, NULL);
-    return;
-  }
-
-  dict_write_uint8(iter, REQUEST_BATTERY_KEY, 1);
-  app_message_outbox_send();
+static void handle_battery(BatteryChargeState battery) {
+  charge_state = battery;
+  layer_mark_dirty(battery_layer);
 }
 
 void received_message(DictionaryIterator *received, void *context) {
@@ -69,8 +59,6 @@ void received_message(DictionaryIterator *received, void *context) {
     uint8_t clock_style = clock_is_24h_style() ? CLOCK_STYLE_24H : CLOCK_STYLE_12H;
     dict_write_uint8(iter, CLOCK_STYLE_KEY, clock_style);
     app_message_outbox_send();
-
-    app_timer_register(1000, &handle_timer, NULL);
   } else {
     Tuple *tuple = dict_find(received, CALENDAR_RESPONSE_KEY);
 
@@ -85,13 +73,6 @@ void received_message(DictionaryIterator *received, void *context) {
           text_layer_set_text(text_event_start_date_layer, event.start_date);
           text_layer_set_text(text_event_location_layer, event.has_location ? event.location : "");
         }
-      }
-    } else {
-      Tuple *tuple = dict_find(received, BATTERY_RESPONSE_KEY);
-
-      if (tuple) {
-        memcpy(&battery_status, &tuple->value->data[0], sizeof(BatteryStatus));
-        layer_mark_dirty(battery_layer);
       }
     }
   }
@@ -132,8 +113,6 @@ void handle_minute_tick(struct tm *tick_time, TimeUnits units_changed) {
     uint8_t clock_style = clock_is_24h_style() ? CLOCK_STYLE_24H : CLOCK_STYLE_12H;
     dict_write_uint8(iter, CLOCK_STYLE_KEY, clock_style);
     app_message_outbox_send();
-
-    app_timer_register(1000, &handle_timer, NULL);
   }
 }
 
@@ -192,8 +171,8 @@ void init() {
   layer_set_update_proc(battery_layer, battery_layer_update_callback);
   layer_add_child(window_get_root_layer(window), battery_layer);
 
-  battery_status.state = 0;
-  battery_status.level = -1;
+  charge_state = battery_state_service_peek();
+  battery_state_service_subscribe(&handle_battery);
 
   app_message_open(124, 256);
   app_message_register_inbox_received(received_message);
@@ -205,12 +184,11 @@ void init() {
   uint8_t clock_style = clock_is_24h_style() ? CLOCK_STYLE_24H : CLOCK_STYLE_12H;
   dict_write_uint8(iter, CLOCK_STYLE_KEY, clock_style);
   app_message_outbox_send();
-
-  app_timer_register(1000, &handle_timer, NULL);
 }
 
 void deinit() {
   app_message_deregister_callbacks();
+  battery_state_service_unsubscribe();
   layer_destroy(battery_layer);
   gbitmap_destroy(icon_battery);
   text_layer_destroy(text_event_location_layer);

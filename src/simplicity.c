@@ -43,7 +43,7 @@ void battery_layer_update_callback(Layer *layer, GContext *ctx) {
   }
 }
 
-static void handle_battery(BatteryChargeState battery) {
+void handle_battery(BatteryChargeState battery) {
   charge_state = battery;
   layer_mark_dirty(battery_layer);
 }
